@@ -1,0 +1,9 @@
+# Template Daftar Pengguna Broker Mosquitto PATRIOT-AD
+# Buat file "deploy/mosquitto/patriot_passwd" (diabaikan oleh Git) menggunakan:
+#
+#   "C:\Program Files\mosquitto\mosquitto_passwd.exe" -c deploy\mosquitto\patriot_passwd patriot_gateway
+#   "C:\Program Files\mosquitto\mosquitto_passwd.exe" -b deploy\mosquitto\patriot_passwd esp32_gudang "<PASSWORD_ESP32>"
+#
+# Lalu jalankan deploy\mosquitto\pasang_keamanan_mosquitto.bat (Run as Administrator).
+patriot_gateway:$7$EXAMPLE_HASH_GENERATE_WITH_MOSQUITTO_PASSWD
+esp32_gudang:$7$EXAMPLE_HASH_GENERATE_WITH_MOSQUITTO_PASSWD

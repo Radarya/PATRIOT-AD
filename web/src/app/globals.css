@@ -1,0 +1,119 @@
+@import "tailwindcss";
+
+@custom-variant dark (&:where(.dark, .dark *));
+
+:root,
+[data-theme="dark"],
+.dark {
+  --background: #111722;
+  --foreground: #E2E8F0;
+  --card-bg: #192231;
+  --card-subtle: #222E42;
+  --card-border: #222E42;
+  --card-hover: #2A3850;
+  --text-muted: #94A3B8;
+  --accent: #3B76D4;
+  --status-safe: #2CA58D;
+}
+
+/* TEMA NORMAL TERANG (LOW-EYE-STRAIN COOL ALABASTER) */
+[data-theme="light"],
+.light {
+  --background: #EEF2F6;
+  --foreground: #1E293B;
+  --card-bg: #F8FAFC;
+  --card-subtle: #E2E8F0;
+  --card-border: #E2E8F0;
+  --card-hover: #CBD5E1;
+  --text-muted: #475569;
+  --accent: #2B5B9E;
+  --status-safe: #2CA58D;
+}
+
+/* TEMA KHUSUS ANOMALI GELAP (CRIMSON-ABU TEDUH) */
+[data-theme="dark-anomaly"] {
+  --background: #181215;
+  --foreground: #E2E8F0;
+  --card-bg: #23191D;
+  --card-subtle: #302026;
+  --card-border: #3D2930;
+  --card-hover: #4A303A;
+  --text-muted: #94A3B8;
+  --accent: #D13B4B;
+  --status-safe: #2CA58D;
+}
+
+/* TEMA KHUSUS ANOMALI TERANG (MERAH-PUTIH TEDUH) */
+[data-theme="light-anomaly"] {
+  --background: #F7EDED;
+  --foreground: #1E293B;
+  --card-bg: #FCF8F8;
+  --card-subtle: #F0DFE2;
+  --card-border: #E7CCD1;
+  --card-hover: #DEBAC1;
+  --text-muted: #475569;
+  --accent: #B82E3E;
+  --status-safe: #2CA58D;
+}
+
+@theme inline {
+  --color-background: var(--background);
+  --color-foreground: var(--foreground);
+  --font-sans: -apple-system, BlinkMacSystemFont, "Segoe UI", Roboto, "Helvetica Neue", Arial, sans-serif;
+  --font-mono: ui-monospace, SFMono-Regular, Menlo, Monaco, Consolas, "Liberation Mono", "Courier New", monospace;
+}
+
+body {
+  background-color: var(--background);
+  color: var(--foreground);
+  font-family: var(--font-sans);
+  overflow-x: hidden;
+  min-height: 100vh;
+}
+
+@keyframes enterFadeUp {
+  from {
+    opacity: 0;
+    transform: translateY(12px);
+  }
+  to {
+    opacity: 1;
+    transform: translateY(0);
+  }
+}
+
+@keyframes enterFade {
+  from {
+    opacity: 0;
+  }
+  to {
+    opacity: 1;
+  }
+}
+
+.animate-fade-up {
+  animation: enterFadeUp 0.35s cubic-bezier(0.16, 1, 0.3, 1) forwards;
+}
+
+.animate-fade {
+  animation: enterFade 0.25s ease-out forwards;
+}
+
+/* Custom scrollbars */
+::-webkit-scrollbar {
+  width: 6px;
+  height: 6px;
+}
+
+::-webkit-scrollbar-track {
+  background: transparent;
+}
+
+::-webkit-scrollbar-thumb {
+  background: rgba(148, 163, 184, 0.2);
+  border-radius: 3px;
+}
+
+::-webkit-scrollbar-thumb:hover {
+  background: rgba(148, 163, 184, 0.4);
+}

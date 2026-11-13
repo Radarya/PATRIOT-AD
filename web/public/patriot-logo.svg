@@ -1,0 +1,62 @@
+<svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 100 100" width="100%" height="100%" fill="none">
+  <defs>
+    <!-- Left Main Body Gradient -->
+    <linearGradient id="shieldLeftGrad" x1="0%" y1="0%" x2="100%" y2="100%">
+      <stop offset="0%" stop-color="#3b82f6" />
+      <stop offset="50%" stop-color="#2563eb" />
+      <stop offset="100%" stop-color="#1d4ed8" />
+    </linearGradient>
+
+    <!-- Right Main Body Gradient (Shadowed) -->
+    <linearGradient id="shieldRightGrad" x1="0%" y1="0%" x2="100%" y2="100%">
+      <stop offset="0%" stop-color="#1d4ed8" />
+      <stop offset="60%" stop-color="#1e40af" />
+      <stop offset="100%" stop-color="#172554" />
+    </linearGradient>
+
+    <!-- Top Left Bevel (Light Highlight) -->
+    <linearGradient id="shieldTopLeftGrad" x1="0%" y1="0%" x2="100%" y2="100%">
+      <stop offset="0%" stop-color="#93c5fd" />
+      <stop offset="40%" stop-color="#60a5fa" />
+      <stop offset="100%" stop-color="#3b82f6" />
+    </linearGradient>
+
+    <!-- Top Right Bevel -->
+    <linearGradient id="shieldTopRightGrad" x1="0%" y1="0%" x2="100%" y2="100%">
+      <stop offset="0%" stop-color="#3b82f6" />
+      <stop offset="100%" stop-color="#1d4ed8" />
+    </linearGradient>
+
+    <!-- Soft Cyan Core Glow -->
+    <filter id="coreGlow" x="-50%" y="-50%" width="200%" height="200%">
+      <feGaussianBlur stdDeviation="1.5" result="blur" />
+      <feMerge>
+        <feMergeNode in="blur" />
+        <feMergeNode in="SourceGraphic" />
+      </feMerge>
+    </filter>
+  </defs>
+
+  <!-- SHIELD GROUP: PURE VECTOR, ZERO BACKGROUND RECTANGLE -->
+  <g id="patriot-shield">
+    <!-- Top-Left Facet -->
+    <polygon points="50,15 25,32 50,44" fill="url(#shieldTopLeftGrad)" />
+
+    <!-- Top-Right Facet -->
+    <polygon points="50,15 75,32 50,44" fill="url(#shieldTopRightGrad)" />
+
+    <!-- Main Left Body Facet -->
+    <polygon points="50,44 25,32 29,62 50,88" fill="url(#shieldLeftGrad)" />
+
+    <!-- Main Right Body Facet -->
+    <polygon points="50,44 75,32 71,62 50,88" fill="url(#shieldRightGrad)" />
+
+    <!-- Center Seam Highlight Ridge -->
+    <line x1="50" y1="16" x2="50" y2="87" stroke="#60a5fa" stroke-width="0.75" stroke-linecap="round" opacity="0.6" />
+
+    <!-- Center Glowing Nexus Sensor Node -->
+    <circle cx="50" cy="44" r="3" fill="#38bdf8" opacity="0.4" filter="url(#coreGlow)" />
+    <circle cx="50" cy="44" r="1.6" fill="#38bdf8" />
+    <circle cx="50" cy="44" r="0.75" fill="#ffffff" />
+  </g>
+</svg>
