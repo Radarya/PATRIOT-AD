@@ -145,10 +145,13 @@ export const TacticalLockScreen: React.FC<TacticalLockScreenProps> = ({
               <div className="relative w-12 h-12 flex-shrink-0">
                 <Image
                   src="/patriot-logo.png"
-                  alt="PUSSIBERAD Logo"
+                  alt="Logo PATRIOT-AD"
                   fill
                   sizes="48px"
                   className="object-contain"
+                  style={{
+                    filter: "drop-shadow(0 0 8px rgba(147, 197, 253, 0.4))",
+                  }}
                   priority
                 />
               </div>

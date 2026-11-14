@@ -14,8 +14,11 @@ export const metadata: Metadata = {
   description:
     "Sistem pertahanan operasional (OT) militer otonom dengan korelasi lintas-sinyal telemetri, audit forensik berantai SHA-256, dan grafik tren sensor siber-fisik realtime.",
   icons: {
-    icon: "/patriot-logo.png",
-    shortcut: "/patriot-logo.png",
+    icon: [
+      { url: "/favicon.ico", sizes: "any" },
+      { url: "/patriot-logo.png", type: "image/png" },
+    ],
+    shortcut: "/favicon.ico",
     apple: "/patriot-logo.png",
   },
 };
