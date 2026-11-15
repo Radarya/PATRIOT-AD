@@ -1,5 +1,14 @@
 # PATRIOT-AD
 
+## 🔗 Akses Cepat Penjurian
+- 🌐 **Live Web Dashboard (Mode Simulasi Interaktif Vercel):** https://patriotad.vercel.app/
+- 🎥 **Video Demonstrasi (YouTube):** https://youtu.be/uY3mOeJCwWY
+- 📊 **Slide Presentasi (Canva):** https://canva.link/uvnc1r4apmkoexh
+
+> **🔑 Panduan Akses Cepat Dewan Juri (Layar Otentikasi Pos Jaga):**  
+> Saat membuka Web Dashboard, Dewan Juri dapat langsung menekan tombol **Akses Cepat Demo** pada layar login untuk langsung menguji fitur tanpa mengetik kredensial manual.
+
+
 **Platform Analisis Trafik & Respons Infrastruktur Operasional Terpadu – Angkatan Darat**  
 Kartika Cyber Hackathon 2026 (PUSSIBERAD × CODEPOLITAN) — Kategori **Penangkalan**
 
