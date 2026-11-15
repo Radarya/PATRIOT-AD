@@ -48,8 +48,21 @@ def kirim_post(host: str, path: str, body: dict | None = None, extra_headers: di
         headers=headers,
         method="POST",
     )
-    with urllib.request.urlopen(req, timeout=5.0) as resp:
-        return json.loads(resp.read().decode("utf-8"))
+    try:
+        with urllib.request.urlopen(req, timeout=5.0) as resp:
+            return json.loads(resp.read().decode("utf-8"))
+    except urllib.error.HTTPError as exc:
+        detail = exc.read().decode("utf-8", errors="replace")
+        raise RuntimeError(f"HTTP {exc.code} di {path}: {detail}") from exc
+
+
+def ambil_token(host: str, role: str = "admin") -> str:
+    """Ambil token otorisasi sesi dari backend untuk memicu skenario uji / pemulihan."""
+    res = kirim_post(host, "/api/auth/login", {"role": role})
+    token = str(res.get("token") or "").strip()
+    if not token:
+        raise RuntimeError(f"Pos Jaga tidak mengembalikan token untuk peran '{role}'.")
+    return token
 
 
 def cetak_hasil_serangan(judul: str, hasil: dict) -> None:
@@ -132,7 +145,12 @@ def jalankan_aksi(host: str, pilihan: str) -> None:
 
     elif pilihan == "2":
         print("\n[>] Melancarkan sabotase 'Matikan Kipas' saat suhu gudang panas (>= 32,0°C)...")
-        hasil = kirim_post(host, "/api/benchmark/SCN-03")
+        token = ambil_token(host, "admin")
+        hasil = kirim_post(
+            host,
+            "/api/benchmark/SCN-03",
+            extra_headers={"X-Patriot-Token": token},
+        )
         cetak_hasil_serangan("2. Sabotase Matikan Kipas Saat Suhu Panas", hasil)
 
     elif pilihan == "3":
@@ -201,12 +219,18 @@ def jalankan_aksi(host: str, pilihan: str) -> None:
 
     elif pilihan == "0":
         print("\n[>] Memulihkan status pantauan dan membebaskan daftar karantina...")
-        for iden in ("penyusup_flood", "esp32_gudang", "unauthorized"):
+        token = ambil_token(host, "admin")
+        headers_otorisasi = {"X-Patriot-Token": token}
+        for iden in ("penyusup_flood", "intruder_burst", "esp32_gudang", "unauthorized", "operator"):
             try:
-                kirim_post(host, f"/api/quarantine/{iden}/release")
+                kirim_post(
+                    host,
+                    f"/api/quarantine/{iden}/release",
+                    extra_headers=headers_otorisasi,
+                )
             except Exception:
                 pass
-        kirim_post(host, "/api/benchmark/SCN-01")
+        kirim_post(host, "/api/benchmark/SCN-01", extra_headers=headers_otorisasi)
         print("[OK] Status Pos Jaga dan maket fisik telah kembali ke Kondisi Normal.\n")
 
 

@@ -71,22 +71,25 @@ export default function DashboardClient({
 
   // Cek sesi login tersimpan di browser agar tidak perlu login ulang setiap refresh
   useEffect(() => {
-    try {
-      const savedAuth = sessionStorage.getItem("patriot_session_auth");
-      if (savedAuth) {
-        const parsed = JSON.parse(savedAuth);
-        if (parsed && parsed.name === "Sertu Raditya") {
-          parsed.name = "Sertu Fulan";
-          sessionStorage.setItem("patriot_session_auth", JSON.stringify(parsed));
+    const raf = requestAnimationFrame(() => {
+      try {
+        const savedAuth = sessionStorage.getItem("patriot_session_auth");
+        if (savedAuth) {
+          const parsed = JSON.parse(savedAuth);
+          if (parsed && parsed.name === "Sertu Raditya") {
+            parsed.name = "Sertu Fulan";
+            sessionStorage.setItem("patriot_session_auth", JSON.stringify(parsed));
+          }
+          setCurrentUser(parsed);
+          setIsLocked(false);
+        } else {
+          setIsLocked(true);
         }
-        setCurrentUser(parsed);
-        setIsLocked(false);
-      } else {
+      } catch {
         setIsLocked(true);
       }
-    } catch {
-      setIsLocked(true);
-    }
+    });
+    return () => cancelAnimationFrame(raf);
   }, []);
 
   const handleAuthenticate = (user: TacticalUser) => {
@@ -165,46 +168,52 @@ export default function DashboardClient({
 
   // Sinkronisasi riwayat telemetri awal dengan jam nyata saat konsol pertama kali dimuat
   useEffect(() => {
-    setTelemetryHistory(getDynamicInitialTelemetry());
+    const raf = requestAnimationFrame(() => {
+      setTelemetryHistory(getDynamicInitialTelemetry());
+    });
+    return () => cancelAnimationFrame(raf);
   }, []);
 
   // Pulihkan tema & tab aktif dari penyimpanan lokal saat mount
   useEffect(() => {
-    try {
-      const savedTheme = localStorage.getItem("patriot_theme") as
-        | "dark"
-        | "light"
-        | null;
-      if (
-        savedTheme &&
-        (savedTheme === "light" || savedTheme === "dark") &&
-        savedTheme !== theme
-      ) {
-        setTheme(savedTheme);
-      }
-
-      const sp = new URLSearchParams(window.location.search);
-      const urlTab = sp.get("tab")?.toUpperCase() as ViewMode;
-      const validTabs: ViewMode[] = ["MONITORING", "BENCHMARK", "FORENSIC"];
-      if (urlTab && validTabs.includes(urlTab)) {
-        setActiveView(urlTab);
-      } else {
-        const savedView = localStorage.getItem("patriot_active_view") as ViewMode;
-        if (savedView && validTabs.includes(savedView)) {
-          setActiveView(savedView);
-        }
-      }
-
-      setCurrentScenario("SCN-01");
-      setAlertLevel(ResponseLevel.NONE);
-      setLastCommand("FAN_ON");
+    const raf = requestAnimationFrame(() => {
       try {
-        localStorage.setItem("patriot_scenario", "SCN-01");
-        localStorage.setItem("patriot_fan_state", "ON");
-        localStorage.setItem("patriot_temperature", String(BASELINE_TEMP_C));
-        document.cookie = "patriot_scenario=SCN-01; path=/; max-age=31536000; SameSite=Lax";
+        const savedTheme = localStorage.getItem("patriot_theme") as
+          | "dark"
+          | "light"
+          | null;
+        if (
+          savedTheme &&
+          (savedTheme === "light" || savedTheme === "dark") &&
+          savedTheme !== theme
+        ) {
+          setTheme(savedTheme);
+        }
+
+        const sp = new URLSearchParams(window.location.search);
+        const urlTab = sp.get("tab")?.toUpperCase() as ViewMode;
+        const validTabs: ViewMode[] = ["MONITORING", "BENCHMARK", "FORENSIC"];
+        if (urlTab && validTabs.includes(urlTab)) {
+          setActiveView(urlTab);
+        } else {
+          const savedView = localStorage.getItem("patriot_active_view") as ViewMode;
+          if (savedView && validTabs.includes(savedView)) {
+            setActiveView(savedView);
+          }
+        }
+
+        setCurrentScenario("SCN-01");
+        setAlertLevel(ResponseLevel.NONE);
+        setLastCommand("FAN_ON");
+        try {
+          localStorage.setItem("patriot_scenario", "SCN-01");
+          localStorage.setItem("patriot_fan_state", "ON");
+          localStorage.setItem("patriot_temperature", String(BASELINE_TEMP_C));
+          document.cookie = "patriot_scenario=SCN-01; path=/; max-age=31536000; SameSite=Lax";
+        } catch {}
       } catch {}
-    } catch {}
+    });
+    return () => cancelAnimationFrame(raf);
     // eslint-disable-next-line react-hooks/exhaustive-deps
   }, []);
 
@@ -327,6 +336,8 @@ export default function DashboardClient({
     return undefined;
   };
 
+  const triggerScenarioRef = useRef<(id: string) => void>(() => {});
+
   const handleTriggerScenario = (scenarioId: string) => {
     setCurrentScenario(scenarioId);
     currentScenarioRef.current = scenarioId;
@@ -338,7 +349,7 @@ export default function DashboardClient({
 
     if (scenarioId !== "SCN-01") {
       scenarioResetTimerRef.current = setTimeout(() => {
-        handleTriggerScenario("SCN-01");
+        triggerScenarioRef.current("SCN-01");
       }, 8000);
     }
 
@@ -388,6 +399,10 @@ export default function DashboardClient({
       document.cookie = `patriot_scenario=${scenarioId}; path=/; max-age=31536000; SameSite=Lax`;
     } catch {}
   };
+
+  useEffect(() => {
+    triggerScenarioRef.current = handleTriggerScenario;
+  });
 
   const { handleStartSabotageDemo } = useSimulation({
     hardwareConnectedRef,

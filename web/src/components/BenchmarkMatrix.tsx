@@ -2,7 +2,7 @@
 
 import React from "react";
 import { Decision } from "@/types";
-import { Layers, Timer, CheckCircle2, XCircle, ShieldCheck } from "lucide-react";
+import { Layers, Timer, CheckCircle2, ShieldCheck } from "lucide-react";
 
 interface BenchmarkMatrixProps {
   onTriggerScenario: (scenarioId: string) => void;

@@ -16,7 +16,7 @@ interface InstrumentClusterProps {
   isTampered?: boolean;
 }
 
-// Helper SVG Sparkline Component (Ultra-lightweight, zero-slop, native SVG)
+// Helper SVG Sparkline Component (Lightweight, native SVG)
 function SparklineArea({
   data,
   color,
@@ -73,7 +73,6 @@ function SparklineArea({
 
 export default function InstrumentCluster({
   telemetry,
-  alertLevel,
   safetyGateThreshold = 32.0,
   theme = "dark",
   isAnomaly = false,
@@ -108,21 +107,27 @@ export default function InstrumentCluster({
   ]);
 
   useEffect(() => {
-    if (!tempHistory) {
+    if (tempHistory) return;
+    const raf = requestAnimationFrame(() => {
       setInternalTemp((prev) => [...prev.slice(1), temp]);
-    }
+    });
+    return () => cancelAnimationFrame(raf);
   }, [temp, tempHistory]);
 
   useEffect(() => {
-    if (!humHistory) {
+    if (humHistory) return;
+    const raf = requestAnimationFrame(() => {
       setInternalHum((prev) => [...prev.slice(1), humidity]);
-    }
+    });
+    return () => cancelAnimationFrame(raf);
   }, [humidity, humHistory]);
 
   useEffect(() => {
-    if (!currentHistory) {
+    if (currentHistory) return;
+    const raf = requestAnimationFrame(() => {
       setInternalCurr((prev) => [...prev.slice(1), current]);
-    }
+    });
+    return () => cancelAnimationFrame(raf);
   }, [current, currentHistory]);
 
   const activeTempHistory = useMemo(() => {

@@ -63,7 +63,6 @@ export const INITIAL_TELEMETRY_POINTS: TelemetryPoint[] = [
 
 export default function LiveTelemetryChart({
   telemetry,
-  alertLevel,
   safetyGateThreshold = 32.0,
   theme = "dark",
   isAnomaly = false,
@@ -181,22 +180,43 @@ export default function LiveTelemetryChart({
   };
 
   const tempPoints = useMemo(() => {
+    const total = activeHistory.length - 1 || 1;
     return activeHistory
-      .map((p, idx) => `${getX(idx).toFixed(1)},${getYTemp(p.temp).toFixed(1)}`)
+      .map((p, idx) => {
+        const x = padding.left + (idx / total) * plotW;
+        const clamped = Math.max(minTempScale, Math.min(maxTempScale, p.temp));
+        const ratio = (clamped - minTempScale) / (maxTempScale - minTempScale);
+        const y = padding.top + plotH - ratio * plotH;
+        return `${x.toFixed(1)},${y.toFixed(1)}`;
+      })
       .join(" ");
-  }, [activeHistory]);
+  }, [activeHistory, padding.left, padding.top, plotW, plotH]);
 
   const currentPoints = useMemo(() => {
+    const total = activeHistory.length - 1 || 1;
     return activeHistory
-      .map((p, idx) => `${getX(idx).toFixed(1)},${getYCur(p.current).toFixed(1)}`)
+      .map((p, idx) => {
+        const x = padding.left + (idx / total) * plotW;
+        const clamped = Math.max(minCurScale, Math.min(maxCurScale, p.current));
+        const ratio = (clamped - minCurScale) / (maxCurScale - minCurScale);
+        const y = padding.top + plotH - ratio * plotH;
+        return `${x.toFixed(1)},${y.toFixed(1)}`;
+      })
       .join(" ");
-  }, [activeHistory]);
+  }, [activeHistory, padding.left, padding.top, plotW, plotH]);
 
   const humidityPoints = useMemo(() => {
+    const total = activeHistory.length - 1 || 1;
     return activeHistory
-      .map((p, idx) => `${getX(idx).toFixed(1)},${getYHum(p.humidity).toFixed(1)}`)
+      .map((p, idx) => {
+        const x = padding.left + (idx / total) * plotW;
+        const clamped = Math.max(minHumScale, Math.min(maxHumScale, p.humidity));
+        const ratio = (clamped - minHumScale) / (maxHumScale - minHumScale);
+        const y = padding.top + plotH - ratio * plotH;
+        return `${x.toFixed(1)},${y.toFixed(1)}`;
+      })
       .join(" ");
-  }, [activeHistory]);
+  }, [activeHistory, padding.left, padding.top, plotW, plotH]);
 
   const thresholdY = getYTemp(safetyGateThreshold);
   const isTempViolated = currentTemp >= safetyGateThreshold;

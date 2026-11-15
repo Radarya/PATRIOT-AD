@@ -37,45 +37,50 @@ export default function TerminalFeed({
   const lastLoggedScenario = useRef<string>("");
 
   const [logs, setLogs] = useState<TerminalLog[]>([]);
+  const initialSampleRef = useRef({ currentTemp, currentMa });
 
   // Inisialisasi log dengan waktu nyata (realtime clock) saat konsol dimuat
   useEffect(() => {
-    const now = Date.now();
-    const fmt = (offsetSeconds: number) => {
-      return new Date(now - offsetSeconds * 1000).toTimeString().split(" ")[0];
-    };
-    setLogs([
-      {
-        id: "log-1",
-        time: fmt(35),
-        tag: "SISTEM",
-        tagType: "info",
-        message: "Sistem pengawasan PATRIOT-AD aktif. Sensor suhu dan sensor arus kipas siap.",
-        detail: "Kalibrasi sensor selesai dan berjalan normal.",
-      },
-      {
-        id: "log-2",
-        time: fmt(25),
-        tag: "JARINGAN",
-        tagType: "info",
-        message: "Jalur komunikasi perintah pos jaga dan alat pengendali gudang terhubung.",
-      },
-      {
-        id: "log-3",
-        time: fmt(15),
-        tag: "FISIK",
-        tagType: "phys",
-        message: `Arus listrik motor kipas terukur ${currentMa.toFixed(1)} mA.`,
-      },
-      {
-        id: "log-4",
-        time: fmt(5),
-        tag: "AMAN",
-        tagType: "info",
-        message: `Pantauan rutin: Suhu ${currentTemp.toFixed(1)}°C, Arus ${currentMa.toFixed(1)} mA.`,
-        detail: "Perintah sistem dan putaran fisik kipas sesuai.",
-      },
-    ]);
+    const raf = requestAnimationFrame(() => {
+      const now = Date.now();
+      const fmt = (offsetSeconds: number) => {
+        return new Date(now - offsetSeconds * 1000).toTimeString().split(" ")[0];
+      };
+      const init = initialSampleRef.current;
+      setLogs([
+        {
+          id: "log-1",
+          time: fmt(35),
+          tag: "SISTEM",
+          tagType: "info",
+          message: "Sistem pengawasan PATRIOT-AD aktif. Sensor suhu dan sensor arus kipas siap.",
+          detail: "Kalibrasi sensor selesai dan berjalan normal.",
+        },
+        {
+          id: "log-2",
+          time: fmt(25),
+          tag: "JARINGAN",
+          tagType: "info",
+          message: "Jalur komunikasi perintah pos jaga dan alat pengendali gudang terhubung.",
+        },
+        {
+          id: "log-3",
+          time: fmt(15),
+          tag: "FISIK",
+          tagType: "phys",
+          message: `Arus listrik motor kipas terukur ${init.currentMa.toFixed(1)} mA.`,
+        },
+        {
+          id: "log-4",
+          time: fmt(5),
+          tag: "AMAN",
+          tagType: "info",
+          message: `Pantauan rutin: Suhu ${init.currentTemp.toFixed(1)}°C, Arus ${init.currentMa.toFixed(1)} mA.`,
+          detail: "Perintah sistem dan putaran fisik kipas sesuai.",
+        },
+      ]);
+    });
+    return () => cancelAnimationFrame(raf);
   }, []);
 
   useEffect(() => {
@@ -135,7 +140,10 @@ export default function TerminalFeed({
     }
 
     if (newLogs.length > 0) {
-      setLogs((prev) => [...prev.slice(-40), ...newLogs]);
+      const raf = requestAnimationFrame(() => {
+        setLogs((prev) => [...prev.slice(-40), ...newLogs]);
+      });
+      return () => cancelAnimationFrame(raf);
     }
   }, [scenarioId, alertLevel, lastCommand, currentTemp, currentMa]);
 
