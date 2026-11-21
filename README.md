@@ -1,3 +1,7 @@
+<p align="center">
+  <img src="assets/banners/github_readme_banner.png" alt="PATRIOT-AD - Cyber-Physical Defense System" width="100%">
+</p>
+
 # PATRIOT-AD
 
 ## 🔗 Akses Cepat Penjurian

@@ -13,7 +13,10 @@ deploy/mosquitto/patriot_passwd
 
 # 2. Dokumen Internal, Aset Media/Branding, CAD, & Skrip Generator Internal
 docs/
-assets/
+assets/*
+!assets/banners/
+assets/banners/*
+!assets/banners/github_readme_banner.png
 hardware/
 scripts/*
 !scripts/mqtt_bridge.py
